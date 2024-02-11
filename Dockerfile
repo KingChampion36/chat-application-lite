@@ -1,14 +1,13 @@
-# Use the official OpenJDK 17 image as base image
+FROM ubuntu:latest AS build
+RUN apt-get update
+RUN apt-get install openjdk-17-jdk -y
+RUN apt-get install maven -y
+COPY . .
+
+RUN mvn clean package -DskipTests
+
 FROM openjdk:17-jdk-alpine
-
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the packaged Spring Boot application JAR file into the container
-COPY jarfile/chat-application-lite-1.0.0-SNAPSHOT.jar /app/chat-application-lite-1.0.0-SNAPSHOT.jar
-
-# Expose the port that the Spring Boot application will run on
 EXPOSE 8080
+COPY --from=build /target/chat-application-lite-1.0.0-SNAPSHOT.jar chat-app.jar
 
-# Specify the command to run the Spring Boot application when the container starts
-CMD ["java", "-jar", "chat-application-lite-1.0.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "chat-app.jar"]
