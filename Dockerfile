@@ -1,8 +1,6 @@
 # Use the official OpenJDK 17 image as base image
 FROM openjdk:17-jdk-alpine
 
-RUN mvn clean install -DskipTests
-
 # Set the working directory in the container
 WORKDIR /app
 
